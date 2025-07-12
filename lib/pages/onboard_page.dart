@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:school_bus/data/onboard_data.dart';
-import 'package:school_bus/widgets/snack_bar.dart';
+import 'package:school_bus/pages/home_page.dart';
+import 'package:school_bus/widgets/elevated_button.dart';
 
 class OnBoardScreen extends StatefulWidget {
   const OnBoardScreen({super.key});
@@ -41,25 +42,34 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                     height: MediaQuery.of(context).size.height * 0.7,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
                           _onboardData[index]["title"] ?? "",
+                          textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        SizedBox(height: 16),
+                        // SizedBox(height: 28),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
                             _onboardData[index]["subtitle"] ?? "",
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(
+                                fontSize: 20, color: Colors.grey[700]),
                           ),
                         ),
-                        SizedBox(height: 24),
-                        Image.asset(
-                          _onboardData[index]["image"] ?? "",
-                          fit: BoxFit.cover,
+                        // SizedBox(height: 28),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(
+                            _onboardData[index]["image"] ?? "",
+                            // fit: BoxFit.cover,
+                            width: MediaQuery.of(context).size.width * 0.95,
+                          ),
                         ),
                       ],
                     ),
@@ -71,30 +81,40 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              TextButton(
+              TheElevatedButton(
                 onPressed: () {
-                  if (_currentPage > 0) {
-                    _pageController.previousPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeIn);
-                  } else {
-                    mySnackBar(
-                      context: context,
-                      contentMessage: "Your already on the first page",
-                      actionLabel: "Okay",
-                    );
-                  }
+                  _pageController.previousPage(
+                    duration: const Duration(
+                      milliseconds: 300,
+                    ),
+                    curve: Curves.easeIn,
+                  );
                 },
-                child: Text("Back"),
+                buttonText: "Back",
               ),
-              TextButton(
-                onPressed: () {
-                  _pageController.nextPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeIn);
-                },
-                child: Text("Next"),
-              ),
+              _currentPage == _onboardData.length - 1
+                  ? TheElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(),
+                          ),
+                        );
+                      },
+                      buttonText: "Get Started",
+                    )
+                  : TheElevatedButton(
+                      onPressed: () {
+                        _pageController.nextPage(
+                          duration: const Duration(
+                            milliseconds: 300,
+                          ),
+                          curve: Curves.easeIn,
+                        );
+                      },
+                      buttonText: "Next",
+                    )
             ],
           )
         ],
