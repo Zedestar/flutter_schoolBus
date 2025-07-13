@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:school_bus/widgets/costants.dart';
 
 class TheElevatedButton extends StatelessWidget {
   const TheElevatedButton({
@@ -14,7 +15,7 @@ class TheElevatedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color.fromARGB(255, 4, 80, 115),
+        backgroundColor: kcolor,
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),

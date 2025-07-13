@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 
-SnackBar mySnackBar({
+ScaffoldFeatureController mySnackBar({
   required BuildContext context,
   required String contentMessage,
   required String actionLabel,
 }) {
-  return SnackBar(
-    content: Text(contentMessage),
-    action: SnackBarAction(label: actionLabel, onPressed: () {}),
-    duration: Duration(seconds: 1),
+  return ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text("This is a SnackBar message"),
+      action: SnackBarAction(
+        label: "Undo",
+        onPressed: () {
+          // Handle the action
+        },
+      ),
+      duration: Duration(seconds: 2),
+    ),
   );
 }

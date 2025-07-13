@@ -109,23 +109,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                     ),
                   );
                 },
-              )
-                  // List.generate(
-                  //   _onboardData.length,
-                  //   (index) => AnimatedContainer(
-                  //     duration: const Duration(milliseconds: 300),
-                  //     margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                  //     width: _currentPage == index ? 24 : 12,
-                  //     height: 12,
-                  //     decoration: BoxDecoration(
-                  //       color: _currentPage == index
-                  //           ? Colors.blue
-                  //           : Colors.grey[400],
-                  //       borderRadius: BorderRadius.circular(6),
-                  //     ),
-                  //   ),
-                  // ),
-                  ),
+              )),
               _currentPage == _onboardData.length - 1
                   ? TheElevatedButton(
                       onPressed: () {
