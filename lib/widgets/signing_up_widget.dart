@@ -1,25 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:school_bus/functions/validate_function.dart';
+import 'package:school_bus/widgets/costants.dart';
+import 'package:school_bus/widgets/elevated_button.dart';
 import 'package:school_bus/widgets/text_form_field.dart';
 
 class SigningUpWidget extends StatefulWidget {
-  const SigningUpWidget({
-    super.key,
-    required this.usernameController,
-    required this.emailController,
-    required this.phoneNUmberController,
-    required this.passwordController,
-    required this.confirmPasswordController,
-    required this.validateUsername,
-    required this.validateEmail,
-  });
+  const SigningUpWidget({super.key, required this.togglingLoginMode});
 
-  final TextEditingController usernameController;
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-  final TextEditingController confirmPasswordController;
-  final TextEditingController phoneNUmberController;
-  final String? Function(String?)? validateUsername;
-  final String? Function(String?)? validateEmail;
+  final VoidCallback togglingLoginMode;
 
   @override
   State<SigningUpWidget> createState() => _SigningUpWidgetState();
@@ -28,73 +16,175 @@ class SigningUpWidget extends StatefulWidget {
 class _SigningUpWidgetState extends State<SigningUpWidget> {
   int _currentPage = 0;
   final widgetPageController = PageController();
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final phoneNUmberController = TextEditingController();
 
   @override
   void dispose() {
     widgetPageController.dispose();
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    phoneNUmberController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> signupContent = [
-      Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          TheTextFormInput(
-            labelText: "Username",
-            hintText: "Enter your username",
-            controller: widget.usernameController,
-            inputIcon: Icons.person,
-            textVisibility: false,
-            keyboardType: TextInputType.text,
-            validator: widget.validateUsername,
-          ),
-          TheTextFormInput(
-            labelText: "Email",
-            hintText: "Enter your email",
-            controller: widget.emailController,
-            inputIcon: Icons.email,
-            textVisibility: false,
-            keyboardType: TextInputType.text,
-            validator: widget.validateUsername,
-          ),
-        ],
+      SizedBox(
+        height: 160,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            TheTextFormInput(
+              labelText: "Username",
+              hintText: "Enter your username",
+              controller: usernameController,
+              inputIcon: Icons.person,
+              textVisibility: false,
+              keyboardType: TextInputType.text,
+              validator: validateUsername,
+            ),
+            TheTextFormInput(
+              labelText: "Phone",
+              hintText: "Enter your Number number",
+              controller: phoneNUmberController,
+              inputIcon: Icons.phone,
+              textVisibility: false,
+              keyboardType: TextInputType.text,
+              validator: validatePhoneNumber,
+            ),
+          ],
+        ),
       ),
-      Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          TheTextFormInput(
-            labelText: "Username",
-            hintText: "Enter your username",
-            controller: widget.usernameController,
-            inputIcon: Icons.person,
-            textVisibility: false,
-            keyboardType: TextInputType.text,
-            validator: widget.validateUsername,
-          ),
-          TheTextFormInput(
-            labelText: "Email",
-            hintText: "Enter your email",
-            controller: widget.emailController,
-            inputIcon: Icons.email,
-            textVisibility: false,
-            keyboardType: TextInputType.text,
-            validator: widget.validateUsername,
-          ),
-        ],
+      SizedBox(
+        height: 160,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            TheTextFormInput(
+              labelText: "Email",
+              hintText: "Enter your Email",
+              controller: emailController,
+              inputIcon: Icons.email,
+              textVisibility: false,
+              keyboardType: TextInputType.text,
+              validator: validateEmail,
+            ),
+            Container(
+              alignment: Alignment.center,
+              height: 100,
+              width: 150,
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                border: Border.all(
+                  color: Colors.grey,
+                  width: 1.0,
+                ),
+              ),
+              child: Icon(Icons.camera),
+            )
+          ],
+        ),
+      ),
+      SizedBox(
+        height: 160,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            TheTextFormInput(
+              labelText: "Password",
+              hintText: "Enter your Password",
+              controller: passwordController,
+              inputIcon: Icons.password,
+              textVisibility: true,
+              keyboardType: TextInputType.text,
+              validator: validatePassword,
+            ),
+            TheTextFormInput(
+              labelText: "Password",
+              hintText: "Confirm your password",
+              controller: phoneNUmberController,
+              inputIcon: Icons.password,
+              textVisibility: true,
+              keyboardType: TextInputType.text,
+              validator: (value) => validateConfirmPassword(
+                value: value,
+                password: passwordController.text,
+              ),
+            ),
+          ],
+        ),
       ),
     ];
-    return PageView.builder(
-        itemCount: signupContent.length,
-        controller: widgetPageController,
-        onPageChanged: (int index) {
-          setState(() {
-            _currentPage = index;
-          });
-        },
-        itemBuilder: (context, index) {
-          return signupContent[index];
-        });
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Text(
+            "Signup",
+            style: TextStyle(
+              color: kcolor,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(
+            height: 180,
+            child: PageView.builder(
+              itemCount: signupContent.length,
+              controller: widgetPageController,
+              onPageChanged: (int index) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: signupContent[index],
+                );
+              },
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              TheElevatedButton(onPressed: () {}, buttonText: "Back"),
+              ...List.generate(
+                signupContent.length,
+                (index) {
+                  return AnimatedContainer(
+                    height: 12,
+                    width: index == _currentPage ? 24 : 12,
+                    duration: Duration(
+                      milliseconds: 300,
+                    ),
+                    decoration: BoxDecoration(
+                        color: index == _currentPage ? kcolor : Colors.grey,
+                        borderRadius: BorderRadius.circular(12)),
+                  );
+                },
+              ),
+              TheElevatedButton(
+                onPressed: () {},
+                buttonText: "Next",
+              ),
+            ],
+          ),
+          TextButton(
+            onPressed: widget.togglingLoginMode,
+            child: Text("Already have account? Login"),
+          ),
+        ],
+      ),
+    );
   }
 }

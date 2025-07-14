@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:school_bus/functions/validate_function.dart';
 import 'package:school_bus/widgets/costants.dart';
 import 'package:school_bus/widgets/elevated_button.dart';
 import 'package:school_bus/widgets/signing_up_widget.dart';
@@ -30,32 +31,10 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-  String? validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    }
-    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Please enter a valid email address';
-    }
-    return null;
-  }
-
-  String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return "Enter password to login";
-    }
-    return null;
-  }
-
-  String? validateUsername(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your username';
-    }
-    if (value.length < 3) {
-      return 'Username must be at least 3 characters long';
-    }
-    return null;
+  void togglingTheLoginMode() {
+    setState(() {
+      loginMode = !loginMode;
+    });
   }
 
   @override
@@ -65,99 +44,78 @@ class _SignupPageState extends State<SignupPage> {
         title: Text("Signup Page"),
       ),
       body: Center(
-        child: Card(
-          elevation: 8,
-          margin: const EdgeInsets.symmetric(horizontal: 16),
-          child: SingleChildScrollView(
-            child: Container(
-              child: Form(
-                key: _formKey,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        loginMode ? "Login" : "Signup",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: kcolor,
+        child: loginMode
+            ? Card(
+                elevation: 8,
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                child: SingleChildScrollView(
+                  child: Container(
+                    child: Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              "Login",
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: kcolor,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                  height: 160,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      TheTextFormInput(
+                                        labelText: "Username",
+                                        hintText: "Enter your username",
+                                        controller: usernameCotroller,
+                                        inputIcon: Icons.person,
+                                        textVisibility: false,
+                                        keyboardType: TextInputType.text,
+                                        validator: validateUsername,
+                                      ),
+                                      TheTextFormInput(
+                                        labelText: "Password",
+                                        hintText: "Enter your password",
+                                        controller: passwordController,
+                                        keyboardType: TextInputType.text,
+                                        inputIcon: Icons.password,
+                                        textVisibility: true,
+                                        validator: validatePassword,
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                            TheElevatedButton(
+                              onPressed: () {},
+                              buttonText: "Login",
+                            ),
+                            TextButton(
+                              onPressed: togglingTheLoginMode,
+                              child: Text("Don't have an account? Signup"),
+                            )
+                          ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
-                          height: 160,
-                          child: loginMode
-                              ? Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    TheTextFormInput(
-                                      labelText: "Username",
-                                      hintText: "Enter your username",
-                                      controller: usernameCotroller,
-                                      inputIcon: Icons.person,
-                                      textVisibility: false,
-                                      keyboardType: TextInputType.text,
-                                      validator: validateUsername,
-                                    ),
-                                    TheTextFormInput(
-                                      labelText: "Password",
-                                      hintText: "Enter your password",
-                                      controller: passwordController,
-                                      keyboardType: TextInputType.text,
-                                      inputIcon: Icons.password,
-                                      textVisibility: true,
-                                      validator: validatePassword,
-                                    ),
-                                  ],
-                                )
-                              : SigningUpWidget(
-                                  usernameController: usernameCotroller,
-                                  emailController: emailController,
-                                  phoneNUmberController: phoneNumberController,
-                                  passwordController: passwordController,
-                                  confirmPasswordController:
-                                      confirmPasswordController,
-                                  validateUsername: validateUsername,
-                                  validateEmail: validateEmail,
-                                ),
-                        ),
-                      ),
-                      TheElevatedButton(
-                        onPressed: () {
-                          if (loginMode) {
-                            if (!_formKey.currentState!.validate()) {
-                              return;
-                            }
-                            final username = usernameCotroller.text;
-                            final password = passwordController.text;
-                            print("$username $password");
-                          } else {
-                            print("Your on signup mode");
-                          }
-                        },
-                        buttonText: loginMode ? "Login" : "Signup",
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            loginMode = !loginMode;
-                          });
-                        },
-                        child: Text(loginMode
-                            ? "Don't have an account? Signup"
-                            : "Already have an account? login"),
-                      )
-                    ],
+                    ),
                   ),
                 ),
+              )
+            : Card(
+                elevation: 8,
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                child: SigningUpWidget(
+                  togglingLoginMode: togglingTheLoginMode,
+                ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }
