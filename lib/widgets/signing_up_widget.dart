@@ -15,6 +15,7 @@ class SigningUpWidget extends StatefulWidget {
 
 class _SigningUpWidgetState extends State<SigningUpWidget> {
   int _currentPage = 0;
+  final _signUpFormKey = GlobalKey<FormState>();
   final widgetPageController = PageController();
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
@@ -56,7 +57,7 @@ class _SigningUpWidgetState extends State<SigningUpWidget> {
               controller: phoneNUmberController,
               inputIcon: Icons.phone,
               textVisibility: false,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.phone,
               validator: validatePhoneNumber,
             ),
           ],
@@ -64,32 +65,34 @@ class _SigningUpWidgetState extends State<SigningUpWidget> {
       ),
       SizedBox(
         height: 160,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            TheTextFormInput(
-              labelText: "Email",
-              hintText: "Enter your Email",
-              controller: emailController,
-              inputIcon: Icons.email,
-              textVisibility: false,
-              keyboardType: TextInputType.text,
-              validator: validateEmail,
-            ),
-            Container(
-              alignment: Alignment.center,
-              height: 100,
-              width: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1.0,
-                ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              TheTextFormInput(
+                labelText: "Email",
+                hintText: "Enter your Email",
+                controller: emailController,
+                inputIcon: Icons.email,
+                textVisibility: false,
+                keyboardType: TextInputType.emailAddress,
+                validator: validateEmail,
               ),
-              child: Icon(Icons.camera),
-            )
-          ],
+              Container(
+                alignment: Alignment.center,
+                height: 100,
+                width: 150,
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 1.0,
+                  ),
+                ),
+                child: Icon(Icons.camera),
+              )
+            ],
+          ),
         ),
       ),
       SizedBox(
@@ -109,7 +112,7 @@ class _SigningUpWidgetState extends State<SigningUpWidget> {
             TheTextFormInput(
               labelText: "Password",
               hintText: "Confirm your password",
-              controller: phoneNUmberController,
+              controller: confirmPasswordController,
               inputIcon: Icons.password,
               textVisibility: true,
               keyboardType: TextInputType.text,
@@ -122,68 +125,97 @@ class _SigningUpWidgetState extends State<SigningUpWidget> {
         ),
       ),
     ];
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Text(
-            "Signup",
-            style: TextStyle(
-              color: kcolor,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text(
+              "Signup",
+              style: TextStyle(
+                color: kcolor,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          SizedBox(
-            height: 180,
-            child: PageView.builder(
-              itemCount: signupContent.length,
-              controller: widgetPageController,
-              onPageChanged: (int index) {
-                setState(() {
-                  _currentPage = index;
-                });
-              },
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: signupContent[index],
-                );
-              },
+            Form(
+              key: _signUpFormKey,
+              child: SizedBox(
+                height: 180,
+                child: PageView.builder(
+                  itemCount: signupContent.length,
+                  controller: widgetPageController,
+                  physics: NeverScrollableScrollPhysics(),
+                  onPageChanged: (int index) {
+                    setState(() {
+                      _currentPage = index;
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: signupContent[index],
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              TheElevatedButton(onPressed: () {}, buttonText: "Back"),
-              ...List.generate(
-                signupContent.length,
-                (index) {
-                  return AnimatedContainer(
-                    height: 12,
-                    width: index == _currentPage ? 24 : 12,
-                    duration: Duration(
-                      milliseconds: 300,
-                    ),
-                    decoration: BoxDecoration(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                TheElevatedButton(
+                  onPressed: () {
+                    widgetPageController.previousPage(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.bounceIn,
+                    );
+                  },
+                  buttonText: "Back",
+                ),
+                ...List.generate(
+                  signupContent.length,
+                  (index) {
+                    return AnimatedContainer(
+                      height: 12,
+                      width: index == _currentPage ? 24 : 12,
+                      duration: Duration(
+                        milliseconds: 300,
+                      ),
+                      decoration: BoxDecoration(
                         color: index == _currentPage ? kcolor : Colors.grey,
-                        borderRadius: BorderRadius.circular(12)),
-                  );
-                },
-              ),
-              TheElevatedButton(
-                onPressed: () {},
-                buttonText: "Next",
-              ),
-            ],
-          ),
-          TextButton(
-            onPressed: widget.togglingLoginMode,
-            child: Text("Already have account? Login"),
-          ),
-        ],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    );
+                  },
+                ),
+                TheElevatedButton(
+                  onPressed: () {
+                    if (!_signUpFormKey.currentState!.validate()) {
+                      return;
+                    }
+                    if (_currentPage == signupContent.length - 1) {
+                      print("Ready to sign up boys");
+                      print("The signup mode is activated");
+                    }
+                    widgetPageController.nextPage(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.bounceIn,
+                    );
+                  },
+                  buttonText: _currentPage == signupContent.length - 1
+                      ? "Signup"
+                      : "Next",
+                ),
+              ],
+            ),
+            TextButton(
+              onPressed: widget.togglingLoginMode,
+              child: Text("Already have account? Login"),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 String? validateEmail(String? value) {
   if (value == null || value.isEmpty) {
     return 'Please enter your email';
@@ -25,8 +23,8 @@ String? validatePhoneNumber(String? value) {
   if (value == null || value.isEmpty) {
     return 'Enter phone number to continue';
   }
-  if (value != 13) {
-    return "Phone number must contain 13 number";
+  if (value.length != 13) {
+    return "Phone number must contain 13 number current are ${value.length}";
   }
   return null;
 }
