@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:school_bus/functions/validate_function.dart';
 import 'package:school_bus/widgets/costants.dart';
 import 'package:school_bus/widgets/elevated_button.dart';
+import 'package:school_bus/widgets/taking_pick_widget.dart';
 import 'package:school_bus/widgets/text_form_field.dart';
 
 class SigningUpWidget extends StatefulWidget {
@@ -15,6 +18,7 @@ class SigningUpWidget extends StatefulWidget {
 
 class _SigningUpWidgetState extends State<SigningUpWidget> {
   int _currentPage = 0;
+  File? userImage;
   final _signUpFormKey = GlobalKey<FormState>();
   final widgetPageController = PageController();
   final usernameController = TextEditingController();
@@ -78,18 +82,8 @@ class _SigningUpWidgetState extends State<SigningUpWidget> {
                 keyboardType: TextInputType.emailAddress,
                 validator: validateEmail,
               ),
-              Container(
-                alignment: Alignment.center,
-                height: 100,
-                width: 150,
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 1.0,
-                  ),
-                ),
-                child: Icon(Icons.camera),
+              TakingPicWidget(
+                userImageProfile: userImage,
               )
             ],
           ),
